@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo padel</title>
+
+    <link rel="stylesheet" href="./sorteo-padel.css">
+
+</head>
+
+<body>
+
+    <script src="./sorteo-padel.js"></script>
+
+    <div id="wrapper">
+        
+        <div id="titulo">
+        Sorteo pádel
+        </div>
+
+        <div class="tituloSeccion">
+        Jugadores
+        </div>
+
+        <form>
+            <textarea id="txtAreaJugadores"_
+                      name="txtAreaJugadores"_
+                      cols="30" rows="15"_
+                      style="resize: none;"
+                      placeholder="Pega aquí los jugadores. El primer jugador empieza por 1"></textarea>
+            <p><input type="button" id="btSortear" value="Sortear" onclick="sortear()"></p>
+        </form>
+
+        <div class="tituloSeccion">
+            Partidos
+        </div>
+
+        <form>
+            <textarea id="txtAreaPartidos"_
+                      name="txtAreaPartidos"_
+                      cols="40" rows="15"_
+                      style="resize: none;"></textarea>
+            <p><input type="button" id="btCopiar" value="Copiar" onclick="copiar()"></p>
+            <br>
+        </form>
+
+    </div>
+
+</body>
+
+</html>
