@@ -124,12 +124,12 @@
 
                 var arParejaSalida = [].concat(partido == 1 ? arParejas : arParejas2);
 
-                salida = salida + "==== " + (partido == 1 ? "PRIMER" : "SEGUNDO") + " PARTIDO ====\n";
+                salida = salida + "== " + (partido == 1 ? "PRIMER" : "SEGUNDO") + " PARTIDO ==\n";
 
                 var cuentaPistas = 0;
                 var numPareja;
                 while (cuentaPistas < (arParejaSalida.length / 2)) {
-                    salida = salida + "\nPISTA: \n" + "---------\n";
+                    salida = salida + "\nPISTA  \n";
                     
                     for (let numParejaPista = 1; numParejaPista < 3; numParejaPista++) {
                         let parejaBuena = false;
