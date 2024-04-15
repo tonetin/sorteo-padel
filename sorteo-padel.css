@@ -72,3 +72,8 @@ textarea{
     font-size: small;
     margin-top: 0.3rem;
 }
+
+#txtPistas{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;  
+}

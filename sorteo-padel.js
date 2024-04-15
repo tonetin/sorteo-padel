@@ -1,9 +1,12 @@
         var arJugadores = [];
         var arJugadores2 = [];
+        var arPistas = [];
         
-        window.onload = comienzo();
+        window.addEventListener("load", comienzo);
+        
+        /* window.onload = "comienzo()"; */
 
-        const txtJugadores = document.getElementById("txtAreaJugadores");
+        let txtJugadores = document.getElementById("txtAreaJugadores");
         txtJugadores.addEventListener("input", activarBtSortear);
 
         function comienzo() {
@@ -14,7 +17,7 @@
         }
 
         function activarBtSortear(event){
-            btSortear = document.getElementById("btSortear");
+            var btSortear = document.getElementById("btSortear");
             if (btSortear.disabled == true) {
                 btSortear.disabled = false
             }
@@ -51,15 +54,13 @@
                 /* Borrar caracteres antes de cada nombre */
                 for (let indArray = 0; indArray < arJugadores.length; indArray++) {
                     let salir = false;
-                    let indCar = 0;
                     while (salir == false) {
                         arJugadores[indArray] = arJugadores[indArray].trim();
                         let ascii = arJugadores[indArray].toUpperCase().charCodeAt(0);
                         if (ascii > 64 && ascii < 91) {
                             salir = true;
                         } else {
-                            arJugadores[indArray] = arJugadores[indArray].substr(indCar + 1);
-                            ++indCar
+                            arJugadores[indArray] = arJugadores[indArray].substr(1);
                         }
                     }    
                 }; 
@@ -88,6 +89,9 @@
             const NJUGADORES = arJugadores.length;
             /* alert("Tenemos "+ NJUGADORES + " jugadores"); */
             var salida = "";
+
+            /* Establecer los números de pista */
+            arPistas = document.getElementById("txtPistas").value.trim().split(" ");
 
             /* Creación array jugadores en orden aleatorio */
             for (let ind = 0; ind < NJUGADORES; ind++) {
@@ -129,8 +133,12 @@
                 var cuentaPistas = 0;
                 var numPareja;
                 while (cuentaPistas < (arParejaSalida.length / 2)) {
-                    salida = salida + "\nPISTA  \n";
                     
+                    salida = salida + "\nPISTA ";
+                    if (arPistas.length > cuentaPistas && arPistas[cuentaPistas].trim() != "") {
+                        salida = salida + arPistas[cuentaPistas] + ":";         
+                    }
+                    salida = salida + "\n";
                     for (let numParejaPista = 1; numParejaPista < 3; numParejaPista++) {
                         let parejaBuena = false;
                         while (parejaBuena == false) {
