@@ -25,13 +25,15 @@
             <textarea id="txtAreaJugadores"_
                       name="txtAreaJugadores"_
                       cols="30" rows="15"_
-                      style="resize: none;"
-                      placeholder="Pega aquí los jugadores. El primer jugador empieza por 1"></textarea>
+                      style="resize: none;"_
+                      placeholder="Pega aquí los jugadores. El primer jugador empieza por 1"_
+                      onfocus="avisar()"></textarea>
             <p><input type="text"_
                     name="txtPistas"_
                     id="txtPistas"_
                     placeholder="Números de las pistas"_
-                    size="20"> 
+                    size="20"_
+                    onfocus="anadirPistas()">
                 <input type="button" id="btSortear" value="Sortear" onclick="sortear()"></p>
         </form>
 

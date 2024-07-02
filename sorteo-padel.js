@@ -1,6 +1,11 @@
         var arJugadores = [];
         var arJugadores2 = [];
         var arPistas = [];
+
+        var AR_JUG_DCHA = ["patty", "julie", "maria", "maría", "alexander", "ilde", "ildefonso"]
+        var AR_JUG_IZQ = ["lucas", "william"]
+
+        let avisado = false;
         
         window.addEventListener("load", comienzo);
         
@@ -8,6 +13,22 @@
 
         let txtJugadores = document.getElementById("txtAreaJugadores");
         txtJugadores.addEventListener("input", activarBtSortear);
+
+        function avisar() {
+            if (avisado == false) {
+                window.alert("Los siguientes grupos de jugadores no coindirán en la misma pareja:\n\n" +
+                          "* DERECHA: Patty, Maria, Julie, Alexander e Ildefonso\n" +
+                          "* REVES: Lucas y William\n\n" +
+                          "Añadir dd o ii al final del nombre de otros jugadores para fijarlos en la derecha o el revés");    
+                avisado = true;
+            }
+        }
+
+        function anadirPistas() {
+            if (document.getElementById("txtPistas").value == "") {
+                document.getElementById("txtPistas").value = "5 6 7";       
+            } 
+        }
 
         function comienzo() {
             /* Desactivar botones y txtArea de partidos */
@@ -97,17 +118,82 @@
             for (let ind = 0; ind < NJUGADORES; ind++) {
                 arJugadores2[ind] = "";
             }
+
+            /* alert("Array de jugadores tiene " + arJugadores.length + " jugadores") */
+
+            /* Incluir primero los jugadores de lado exclusivo:
+               primera mitad los de derecha, segunda mitad los de izquieeda */
+
+            let numDcha = 0;
+            let numIzq = 0; 
+            let arJugSin = [];
+            avisoDcha = false;
+            avisoIzq = false
+
             for (let ind = 0; ind < NJUGADORES; ind++) {
+                jugador = arJugadores[ind].toLowerCase();
+                esDchaIzq = false;
+                
+                if (AR_JUG_DCHA.includes(jugador) || jugador.slice(-2) == "dd") {
+                    if (numDcha < NJUGADORES / 2) {
+                        limInf = 0;
+                        limSup = NJUGADORES / 2 - 1;
+                        esDchaIzq = true;
+                        numDcha += 1 }
+                    else {
+                        if (avisoDcha == false) {
+                            alert("¡OOPS! Demasiados jugadores de derecha.\nAlguno no se tendrá en cuenta")
+                            avisoDcha = true
+                        }
+                        arJugSin.push(arJugadores[ind])
+                    }
+                } else if (AR_JUG_IZQ.includes(jugador) || jugador.slice(-2) == "ii") {
+                    if (numIzq < NJUGADORES / 2) {
+                        limInf = NJUGADORES / 2
+                        limSup = NJUGADORES - 1
+                        esDchaIzq = true;
+                        numIzq += 1 }
+                    else {
+                        if (avisoIzq == false) {
+                            alert("¡OOPS! Demasiados jugadores de revés.\nAlguno no se tendrá en cuenta")
+                            avisoIzq = true
+                        }
+                        arJugSin.push(arJugadores[ind])  
+                    }
+                } else {   /* sin preferencia de lado */
+                    arJugSin.push(arJugadores[ind]) 
+                }
+
+                if (esDchaIzq) {
+                    let numValido = false;
+                    if (["dd", "ii"].includes(arJugadores[ind].slice(-2))) {
+                        arJugadores[ind] = arJugadores[ind].slice(0, -2)
+                    }
+                    while (numValido == false) {
+                        let nuevoInd = getRandomIntInclusive(limInf, limSup);
+                        if (arJugadores2[nuevoInd] == "") {
+                            arJugadores2[nuevoInd] = arJugadores[ind];
+                            numValido = true;
+                        }    
+                    }
+                }
+            }    
+
+
+            for (let ind = 0; ind < arJugSin.length; ind++) {
                 let numValido = false;
+                if (["dd", "ii"].includes(arJugSin[ind].slice(-2))) {
+                    arJugSin[ind] = arJugSin[ind].slice(0, -2)
+                }
                 while (numValido == false) {
-                    let nuevoInd = getRandomIntInclusive(0, NJUGADORES);
+                    let nuevoInd = getRandomIntInclusive(0, NJUGADORES - 1);
                     if (arJugadores2[nuevoInd] == "") {
-                        arJugadores2[nuevoInd] = arJugadores[ind];
+                        arJugadores2[nuevoInd] = arJugSin[ind];
                         numValido = true;
                     }
                 }
             }
-            /* alert("El array ordenado aleatoriamente es " + arJugadores2); */
+            /* alert("Jugadores derecha: " +  numDcha + ". Jugadores izquierda: " + numIzq); */
 
             /* Creacion de parejas del primer partido */
             const NPAREJAS = NJUGADORES / 2;
@@ -189,3 +275,5 @@
                 /* Rechazado - fallo al copiar el texto al portapapeles */
             });
         }
+
+        
