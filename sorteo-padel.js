@@ -108,6 +108,10 @@
             var arParejas = [];
             var arParejas2 = [];
             const NJUGADORES = arJugadores.length;
+
+            var numPatty = -1
+            var numLucas = -1
+            
             /* alert("Tenemos "+ NJUGADORES + " jugadores"); */
             var salida = "";
 
@@ -133,14 +137,15 @@
             for (let ind = 0; ind < NJUGADORES; ind++) {
                 jugador = arJugadores[ind].toLowerCase();
                 esDchaIzq = false;
+                /* alert("Trabajando " + jugador) */
                 
                 if (AR_JUG_DCHA.includes(jugador) || jugador.slice(-2) == "dd") {
                     if (numDcha < NJUGADORES / 2) {
                         limInf = 0;
                         limSup = NJUGADORES / 2 - 1;
                         esDchaIzq = true;
-                        numDcha += 1 }
-                    else {
+                        numDcha += 1 
+                    } else {
                         if (avisoDcha == false) {
                             alert("¡OOPS! Demasiados jugadores de derecha.\nAlguno no se tendrá en cuenta")
                             avisoDcha = true
@@ -152,8 +157,8 @@
                         limInf = NJUGADORES / 2
                         limSup = NJUGADORES - 1
                         esDchaIzq = true;
-                        numIzq += 1 }
-                    else {
+                        numIzq += 1 
+                    } else {
                         if (avisoIzq == false) {
                             alert("¡OOPS! Demasiados jugadores de revés.\nAlguno no se tendrá en cuenta")
                             avisoIzq = true
@@ -164,6 +169,7 @@
                     arJugSin.push(arJugadores[ind]) 
                 }
 
+
                 if (esDchaIzq) {
                     let numValido = false;
                     if (["dd", "ii"].includes(arJugadores[ind].slice(-2))) {
@@ -171,9 +177,32 @@
                     }
                     while (numValido == false) {
                         let nuevoInd = getRandomIntInclusive(limInf, limSup);
+                        
                         if (arJugadores2[nuevoInd] == "") {
-                            arJugadores2[nuevoInd] = arJugadores[ind];
-                            numValido = true;
+                            if (arJugadores[ind].toLowerCase() == "patty") {
+                                numPatty = nuevoInd;
+                                if ((numLucas != -1) && (numLucas == numPatty + (NJUGADORES/2))) {
+                                    numPatty = -1;
+                                } else  {
+                                    arJugadores2[nuevoInd] = arJugadores[ind];
+                                    numValido = true;
+                                }
+                                /* alert("Terminada Patty. Numero " + numPatty + " seguimos " + numValido) */
+                            } else if (arJugadores[ind].toLowerCase() == "lucas") {
+                                    numLucas = nuevoInd;
+                                    /* alert("Llegamos hasta aquí. Lucas") */
+                                    /* alert("Patty: " + numPatty + " Lucas: " + numLucas) */
+                                    if ((numPatty != -1) && (numLucas == (numPatty + (NJUGADORES/2)))) {
+                                        numLucas = -1;
+                                    } else {
+                                        arJugadores2[nuevoInd] = arJugadores[ind];
+                                        numValido = true;
+                                    }
+                            } else {
+                                arJugadores2[nuevoInd] = arJugadores[ind];
+                                numValido = true;
+                            }
+                            
                         }    
                     }
                 }
@@ -197,17 +226,27 @@
 
             /* Creacion de parejas del primer partido */
             const NPAREJAS = NJUGADORES / 2;
-            const DESPLAZAM = getRandomIntInclusive(1, (NJUGADORES/2 - 1));
             const NPISTAS = NPAREJAS / 2;
 
+            /* Calcular desplazamiento, distinto del que hace coincidir a Patty y Lucas */
+        
+            let desplazam = getRandomIntInclusive(1, (NJUGADORES/2 - 1));
+            if (numPatty != -1 && numLucas != -1) {
+                while ((NJUGADORES/2) + ((numPatty + desplazam) % (NJUGADORES/2)) == numLucas) {
+                    desplazam = getRandomIntInclusive(1, (NJUGADORES/2 - 1));    
+                }
+            } 
+            /* alert("Patty: " + numPatty + " Lucas: " + numLucas + " Desplaz: " + desplazam); */
+            
             for (let ind = 0; ind < NPAREJAS; ind++) {
-                arParejas[ind] = arJugadores2[ind] + " y " + arJugadores2[ind + (NJUGADORES/2)]
+                arParejas[ind] = arJugadores2[ind] + " y " + arJugadores2[ind + (NJUGADORES/2)]       
             }
 
             for (let ind = 0; ind < NPAREJAS; ind++) {
-                arParejas2[ind] = arJugadores2[ind] + " y " + arJugadores2[(NJUGADORES/2) + ((ind + DESPLAZAM) % (NJUGADORES/2))];
+                arParejas2[ind] = arJugadores2[ind] + " y " + arJugadores2[(NJUGADORES/2) + ((ind + desplazam) % (NJUGADORES/2))];
             }
 
+            
             /* Asignacion de pistas y partidos */
 
             for (let partido = 1; partido < 3; partido++) {
