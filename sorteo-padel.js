@@ -17,9 +17,9 @@
         function avisar() {
             if (avisado == false) {
                 window.alert("Los siguientes grupos de jugadores no coindirán en la misma pareja:\n\n" +
-                          "* DERECHA: Patty, Maria, Julie, Alexander e Ildefonso\n" +
+                          "* DERECHA: Patty, Maria, Julie, Alexander, Ildefonso y Rosendo\n" +
                           "* REVES: Lucas y William\n\n" +
-                          "Añadir dd o ii al final del nombre de otros jugadores para fijarlos en la derecha o el revés");    
+                          "PARA FIJAR OTROS JUGADORES en la derecha o el revés añadir dd o ii al final del nombre");    
                 avisado = true;
             }
         }
