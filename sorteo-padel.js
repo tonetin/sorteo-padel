@@ -2,7 +2,7 @@
         var arJugadores2 = [];
         var arPistas = [];
 
-        var AR_JUG_DCHA = ["patty", "julie", "maria", "maría", "alexander", "ilde", "ildefonso"]
+        var AR_JUG_DCHA = ["patty", "julie", "maria", "maría", "alexander", "ilde", "ildefonso", "rosendo"]
         var AR_JUG_IZQ = ["lucas", "william"]
 
         let avisado = false;
