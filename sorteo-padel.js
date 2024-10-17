@@ -2,14 +2,14 @@
         var arJugadores2 = [];
         var arPistas = [];
 
-        var AR_JUG_DCHA = ["patty", "julie", "maria", "maría", "alexander", "ilde", "ildefonso", "rosendo"]
-        var AR_JUG_IZQ = ["lucas", "william"]
+        var AR_JUG_DCHA = ["patty", "julie", "maria", "maría", "alexander", "ilde", "ildefonso", "rosendo"];
+        var AR_JUG_IZQ = ["lucas", "william"];
+
+        var MAX_INTENTOS = 10;
 
         let avisado = false;
         
         window.addEventListener("load", comienzo);
-        
-        /* window.onload = "comienzo()"; */
 
         let txtJugadores = document.getElementById("txtAreaJugadores");
         txtJugadores.addEventListener("input", activarBtSortear);
@@ -104,6 +104,7 @@
         } /* Fin de la función sortear */
 
 
+
         function crearPartidos() {
             var arParejas = [];
             var arParejas2 = [];
@@ -123,8 +124,6 @@
                 arJugadores2[ind] = "";
             }
 
-            /* alert("Array de jugadores tiene " + arJugadores.length + " jugadores") */
-
             /* Incluir primero los jugadores de lado exclusivo:
                primera mitad los de derecha, segunda mitad los de izquieeda */
 
@@ -137,7 +136,6 @@
             for (let ind = 0; ind < NJUGADORES; ind++) {
                 jugador = arJugadores[ind].toLowerCase();
                 esDchaIzq = false;
-                /* alert("Trabajando " + jugador) */
                 
                 if (AR_JUG_DCHA.includes(jugador) || jugador.slice(-2) == "dd") {
                     if (numDcha < NJUGADORES / 2) {
@@ -222,7 +220,6 @@
                     }
                 }
             }
-            /* alert("Jugadores derecha: " +  numDcha + ". Jugadores izquierda: " + numIzq); */
 
             /* Creacion de parejas del primer partido */
             const NPAREJAS = NJUGADORES / 2;
@@ -236,56 +233,184 @@
                     desplazam = getRandomIntInclusive(1, (NJUGADORES/2 - 1));    
                 }
             } 
-            /* alert("Patty: " + numPatty + " Lucas: " + numLucas + " Desplaz: " + desplazam); */
             
             for (let ind = 0; ind < NPAREJAS; ind++) {
-                arParejas[ind] = arJugadores2[ind] + " y " + arJugadores2[ind + (NJUGADORES/2)]       
+                arParejas[ind] = arJugadores2[ind] + " % " + arJugadores2[ind + (NJUGADORES/2)]       
             }
 
             for (let ind = 0; ind < NPAREJAS; ind++) {
-                arParejas2[ind] = arJugadores2[ind] + " y " + arJugadores2[(NJUGADORES/2) + ((ind + desplazam) % (NJUGADORES/2))];
+                arParejas2[ind] = arJugadores2[ind] + " % " + arJugadores2[(NJUGADORES/2) + ((ind + desplazam) % (NJUGADORES/2))];
             }
 
-            
+            /* arParejas y arParejas2: Arrays de parejas para el primer y segundo partido. */
+
+
+            /* **************************************************************************** */
             /* Asignacion de pistas y partidos */
 
-            for (let partido = 1; partido < 3; partido++) {
+            /* Creación del primer partido.
+               Se almacena en la var salida */
+            
+            var arParejaSalida = [].concat(arParejas);
 
-                var arParejaSalida = [].concat(partido == 1 ? arParejas : arParejas2);
+            salida = salida + "== PRIMER PARTIDO ==\n";
 
-                salida = salida + "== " + (partido == 1 ? "PRIMER" : "SEGUNDO") + " PARTIDO ==\n";
+            var cuentaPistas = 0;
+            var numPareja;
+            var arPartidos1 = [];
+            var arPartidos1w = [];
+            var arPartidos2 = [];
 
-                var cuentaPistas = 0;
-                var numPareja;
+            while (cuentaPistas < (arParejaSalida.length / 2)) {
+                    
+                salida = salida + "\nPISTA ";
+                if (arPistas.length > cuentaPistas && arPistas[cuentaPistas].trim() != "") {
+                    salida = salida + arPistas[cuentaPistas] + ":";         
+                }
+                salida = salida + "\n"; 
+
+                for (let numParejaPista = 1; numParejaPista < 3; numParejaPista++) {
+                    let parejaBuena = false;
+                    while (parejaBuena == false) {
+                        numPareja = getRandomIntInclusive(0, arParejaSalida.length - 1);
+                        
+                        if (arParejaSalida[numPareja] != "") {
+                            salida = salida + "  " + arParejaSalida[numPareja] + "\n";
+                            salida = salida + (numParejaPista == 1 ? "     VS\n" : "");
+
+                            if (numParejaPista == 1) {
+                                arPartidos1[cuentaPistas] = arParejaSalida[numPareja];
+                            } else {
+                                arPartidos1[cuentaPistas] = arPartidos1[cuentaPistas] + " y " + arParejaSalida[numPareja];
+                            }
+                            arPartidos1w[cuentaPistas] = arPartidos1[cuentaPistas].replace(" y ", "%").replaceAll(" ", "").split("%");
+
+                            arParejaSalida[numPareja] = "";
+                            parejaBuena = true;
+                        }
+                    }
+                }
+
+                cuentaPistas = cuentaPistas + 1;  
+            }
+            salida = salida + "\n";
+
+
+            /* Asignacion segundo partido y comprobaciones */
+            
+            let asignacionOK = false;
+            let intentos = 0;
+
+            while (asignacionOK == false && intentos < MAX_INTENTOS) {
+            
+                intentos++;
+
+                var arParejaSalida = [].concat(arParejas2);
+
+                cuentaPistas = 0;
+
                 while (cuentaPistas < (arParejaSalida.length / 2)) {
                     
-                    salida = salida + "\nPISTA ";
-                    if (arPistas.length > cuentaPistas && arPistas[cuentaPistas].trim() != "") {
-                        salida = salida + arPistas[cuentaPistas] + ":";         
-                    }
-                    salida = salida + "\n";
+                    let parejaActual = "";
                     for (let numParejaPista = 1; numParejaPista < 3; numParejaPista++) {
+                        
                         let parejaBuena = false;
                         while (parejaBuena == false) {
-                            numPareja = getRandomIntInclusive(0, arParejaSalida.length - 1);
+                            
+                            let numPareja = getRandomIntInclusive(0, arParejaSalida.length - 1);
+
                             if (arParejaSalida[numPareja] != "") {
-                                salida = salida + "  " + arParejaSalida[numPareja] + "\n";
-                                salida = salida + (numParejaPista == 1 ? "     VS\n" : "");
+                                if (numParejaPista == 1) {
+                                    parejaActual = arParejaSalida[numPareja];
+                                } else {
+                                    parejaActual = parejaActual + "%" + arParejaSalida[numPareja];
+                                }
                                 arParejaSalida[numPareja] = "";
                                 parejaBuena = true;
                             }
                         }
+                        
                     }
+                    arPartidos2[cuentaPistas] = parejaActual.split("%");
+
                     cuentaPistas = cuentaPistas + 1;  
+
+                } /* Se asignaron las parejas del segundo partido. */
+
+
+                /* Comprobación de las repeticiones */
+
+                let partidoOK = false;
+                let repetirSorteo = false;
+
+                while (repetirSorteo == false && partidoOK == false) {
+
+                    let numPartido = 0;
+                    while (numPartido < arPartidos2.length && repetirSorteo == false) {
+                        let repeticiones = 0;
+                        let numPartidoExam = 0
+                        while (numPartidoExam < arPartidos1.length && repetirSorteo == false) {
+                            for (let numJugador = 0; numJugador < 4; numJugador++ ) {
+                                
+                                if (arPartidos1w[numPartidoExam].includes(arPartidos2[numPartido][numJugador].replaceAll(" ", ""))) {
+                                    repeticiones++;
+                                }
+                            }
+                            if (repeticiones > 2) {
+                                repetirSorteo = true;
+                            } else  {
+                                if (numPartido == arPartidos2.length - 1 && numPartidoExam == arPartidos1.length - 1) {
+                                    partidoOK = true;
+                                }
+                                numPartidoExam++;
+                                repeticiones = 0;
+                            }
+                        }
+                        numPartido++;
+                    }
                 }
-                salida = salida + "\n"
-            }
+
+                asignacionOK = !repetirSorteo;
+
+                if (asignacionOK == true || intentos == MAX_INTENTOS) {
+
+                    if (asignacionOK == false) {
+                        alert("No se han podido resolver las repeticiones de jugadores en los partidos");
+                    }
+
+                    salida = salida + "== SEGUNDO PARTIDO ==\n";
+
+                    var cuentaPistas = 0;
+
+                    while (cuentaPistas < (arParejaSalida.length / 2)) {
+
+                        salida = salida + "\nPISTA "; 
+                        if (arPistas.length > cuentaPistas && arPistas[cuentaPistas].trim() != "") {
+                            salida = salida + arPistas[cuentaPistas] + ":";         
+                        }
+                        salida = salida + "\n"; 
+                        
+                        salida = salida + "  " + arPartidos2[cuentaPistas][0].trim() + " y " + arPartidos2[cuentaPistas][1].trim() + "\n";
+                        salida = salida + "     VS\n";
+                        salida = salida + "  " + arPartidos2[cuentaPistas][2].trim() + " y " + arPartidos2[cuentaPistas][3].trim() + "\n";
+                    
+                        cuentaPistas = cuentaPistas + 1;  
+                    }
+
+                    salida = salida + "\n"
+                } 
+
+            }  /* while asignacionOK == false o se superan los MAX_INTENTOS */
+
+            
+            salida = salida.replaceAll("%", "y");
 
             document.getElementById("txtAreaPartidos").disabled = false;
             document.getElementById("txtAreaPartidos").value = salida;
             document.getElementById("btCopiar").disabled = false;
 
         } /* Fin de la función crear partidos */
+
 
 
         function copiar() {
@@ -298,9 +423,9 @@
 
         /* Generador de numeros aleatorios enteros entrte min y max, incluyendo ambos */
         function getRandomIntInclusive(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1) + min);
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1) + min);
         }
 
 
