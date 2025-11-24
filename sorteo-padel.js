@@ -112,6 +112,38 @@
 
             var numPatty = -1
             var numLucas = -1
+
+            /* Comprobar si está JCB 
+                Si está y están R y/o JE cambiar a todos a la derecha  */
+
+            let indJCB = -1;
+            let indJE = -1;
+            let estaR = false;
+
+            for (let ind = 0; ind < NJUGADORES; ind++){
+                if (arJugadores[ind].toLowerCase() == "juan carlos b"){
+                    indJCB = ind;
+                    alert("Está JC" );
+                } else if (arJugadores[ind].toLowerCase() == "javier e"){    
+                    indJE = ind;
+                    alert("Está JE");
+                } else if (arJugadores[ind].toLowerCase() == "rosendo"){ 
+                    estaR = true;
+                    alert("Está R");
+                }
+            }
+
+            if (indJCB != -1) {
+                if (estaR == true || indJE != -1) {
+                    arJugadores[indJCB] = arJugadores[indJCB] + "dd";
+                    alert("JC es ahora " + arJugadores[indJCB]);
+                    if (indJE != -1) {
+                        arJugadores[indJE] = arJugadores[indJE] + "dd";
+                        alert("JE es ahora " + arJugadores[indJE]);
+                    }
+                }
+            }
+
             
             /* alert("Tenemos "+ NJUGADORES + " jugadores"); */
             var salida = "";
